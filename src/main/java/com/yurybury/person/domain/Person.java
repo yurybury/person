@@ -3,8 +3,14 @@ package com.yurybury.person.domain;
 import java.net.URI;
 import java.time.OffsetDateTime;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+
+@Entity
 public class Person {
 
+    @Id
     private String id;
     private URI href;
     private String status;
