@@ -2,31 +2,39 @@ package com.yurybury.person.api;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.time.OffsetDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yurybury.person.model.Person;
 import com.yurybury.person.model.PersonAdd;
 import com.yurybury.person.model.PersonUpdate;
+import com.yurybury.person.domain.PersonsRepository;
 
+@Component
 @RestController
 public class PersonApiController implements PersonApi {
- 
-    private final HashMap<String, com.yurybury.person.domain.Person> persons = new HashMap<>();
     private Long index = 0L;
- 
+
+    @Autowired
+    private final PersonsRepository personsRepository;
+
+	public PersonApiController(PersonsRepository personsRepository) {
+		this.personsRepository = personsRepository;
+	}
+    
+
     @Override
     public ResponseEntity<Person> addPerson(PersonAdd apiPerson) {
         
         com.yurybury.person.domain.Person person = new com.yurybury.person.domain.Person();
 
         person.setId(String.valueOf(index));
-        person.setHref(URI.create(String.valueOf(index)));
         person.setStatus("Active");
         person.setCreationDate(OffsetDateTime.now());
         person.setLastUpdate(OffsetDateTime.now());
@@ -44,18 +52,18 @@ public class PersonApiController implements PersonApi {
         person.setPrivatePhone(apiPerson.getPrivatePhone());
         person.setWebHomePage(apiPerson.getWebHomePage());
 
-        persons.put(String.valueOf(index), person);
         index++;
- 
-        return ResponseEntity.ok(domainToApi(person));
+
+        return ResponseEntity.ok(domainToApi(personsRepository.save(person)));
     }
  
 
     @Override
     public ResponseEntity<List<Person>> getPersons() {
         List<Person> pl = new ArrayList<Person>();
-        for (String key : persons.keySet()) {
-            pl.add(domainToApi(persons.get(key)));
+
+        for (com.yurybury.person.domain.Person p : personsRepository.findAll()) {
+            pl.add(domainToApi(p));
         }
         return ResponseEntity.ok(pl);
     }
@@ -63,8 +71,9 @@ public class PersonApiController implements PersonApi {
 
     @Override
     public ResponseEntity<Person> getPerson(String id) {
-        if (persons.containsKey(id)) {
-            return ResponseEntity.ok(domainToApi(persons.get(id)));
+        java.util.Optional<com.yurybury.person.domain.Person> p = personsRepository.findById(id);
+        if (p.isPresent()) {
+            return ResponseEntity.ok(domainToApi(p.get()));
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -72,8 +81,8 @@ public class PersonApiController implements PersonApi {
 
     @Override
     public ResponseEntity<Void> deletePerson(String id) {
-        if (persons.containsKey(id)) {
-            persons.remove(id);
+        if (personsRepository.existsById(id)) {
+            personsRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -83,24 +92,24 @@ public class PersonApiController implements PersonApi {
 
     @Override
     public ResponseEntity<Person> updatePerson(String id, PersonUpdate apiPerson) {
-        if (persons.containsKey(id)) {
-            com.yurybury.person.domain.Person person = persons.get(id);
-            person.setLastUpdate(OffsetDateTime.now());
-            person.setFromDate(OffsetDateTime.now());
-            person.setNamePrefix(apiPerson.getNamePrefix());
-            person.setGivenName(apiPerson.getGivenName());
-            person.setMiddleName(apiPerson.getMiddleName());
-            person.setFamilyName(apiPerson.getFamilyName());
-            person.setNickname(apiPerson.getNickname());
-            person.setGender(apiPerson.getGender());
-            person.seteMailAddress(apiPerson.geteMailAddress());
-            person.setWorkPhone(apiPerson.getWorkPhone());
-            person.setPrivatePhone(apiPerson.getPrivatePhone());
-            person.setWebHomePage(apiPerson.getWebHomePage());
+        if (personsRepository.existsById(id)) {
+            java.util.Optional<com.yurybury.person.domain.Person> person = personsRepository.findById(id);
+            person.get().setLastUpdate(OffsetDateTime.now());
+            person.get().setFromDate(OffsetDateTime.now());
+            person.get().setNamePrefix(apiPerson.getNamePrefix());
+            person.get().setGivenName(apiPerson.getGivenName());
+            person.get().setMiddleName(apiPerson.getMiddleName());
+            person.get().setFamilyName(apiPerson.getFamilyName());
+            person.get().setNickname(apiPerson.getNickname());
+            person.get().setGender(apiPerson.getGender());
+            person.get().seteMailAddress(apiPerson.geteMailAddress());
+            person.get().setWorkPhone(apiPerson.getWorkPhone());
+            person.get().setPrivatePhone(apiPerson.getPrivatePhone());
+            person.get().setWebHomePage(apiPerson.getWebHomePage());
     
-            persons.replace(id, person);
+            personsRepository.save(person.get());
     
-            return ResponseEntity.ok(domainToApi(person));
+            return ResponseEntity.ok(domainToApi(person.get()));
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -110,7 +119,6 @@ public class PersonApiController implements PersonApi {
         Person p = new Person();
 
         p.setId(person.getId());
-        p.setHref(person.getHref());
         p.setStatus(person.getStatus());
         p.setCreationDate(person.getCreationDate());
         p.setLastUpdate(person.getLastUpdate());
@@ -130,3 +138,4 @@ public class PersonApiController implements PersonApi {
         return p;
     }
 }
+

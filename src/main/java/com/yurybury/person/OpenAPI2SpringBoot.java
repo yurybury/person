@@ -1,18 +1,21 @@
-package org.openapitools;
+package com.yurybury.person;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.fasterxml.jackson.databind.Module;
 import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.data.jpa.repository.config.*;
+
+import org.springframework.boot.autoconfigure.domain.*;
+
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"org.openapitools", "com.yurybury.person.api" , "org.openapitools.configuration"})
+@ComponentScan(basePackages = {"org.openapitools", "com.yurybury.person.api", "com.yurybury.person.domain.*", "org.openapitools.configuration"})
 public class OpenAPI2SpringBoot implements CommandLineRunner {
 
     @Override

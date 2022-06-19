@@ -3,31 +3,69 @@ package com.yurybury.person.domain;
 import java.net.URI;
 import java.time.OffsetDateTime;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 
 @Entity
+@Table(name = "Person")
 public class Person {
 
     @Id
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
-    private URI href;
+    @Column(name = "status")
     private String status;
+    @Column(name = "creationDate")
     private OffsetDateTime creationDate;
+    @Column(name = "lastUpdate")
     private OffsetDateTime lastUpdate;
+    @Column(name = "fromDate")
     private OffsetDateTime fromDate;
+    @Column(name = "toDate")
     private OffsetDateTime toDate;
+    @Column(name = "namePrefix")
     private String namePrefix;
+    @Column(name = "givenName")
     private String givenName;
+    @Column(name = "middleName")
     private String middleName;
+    @Column(name = "familyName")
     private String familyName;
+    @Column(name = "nickname")
     private String nickname;
+    @Column(name = "gender")
     private String gender;
+    @Column(name = "eMailAddress")
     private String eMailAddress;
+    @Column(name = "workPhone")
     private String workPhone;
+    @Column(name = "privatePhone")
     private String privatePhone;
+    @Column(name = "webHomePage")
     private String webHomePage;
+
+    /*
+    public Person(String id, String status, OffsetDateTime creationDate, OffsetDateTime lastUpdate, OffsetDateTime fromDate,
+        OffsetDateTime toDate, String namePrefix, String givenName, String middleName, String familyName, String nickname,
+        String gender, String eMailAddress, String workPhone, String privatePhone, String webHomePage) {
+      this.id = id;
+      this.status = status;
+      this.creationDate = creationDate;
+      this.lastUpdate = lastUpdate;
+      this.fromDate = fromDate;
+      this.toDate = toDate;
+      this.namePrefix = namePrefix;
+      this.givenName = givenName;
+      this.middleName = middleName;
+      this.familyName = familyName;
+      this.nickname = nickname;
+      this.gender = gender;
+      this.eMailAddress = eMailAddress;
+      this.workPhone = workPhone;
+      this.privatePhone = privatePhone;
+      this.webHomePage = webHomePage;
+    }
+    */
 
     // Getters and setters
 
@@ -39,15 +77,6 @@ public class Person {
       this.id = id;
     }
 
-    //
-    public URI getHref() {
-      return href;
-    }
-    
-    public void setHref(URI href) {
-      this.href = href;
-    }
-    
     //
     public String getStatus() {
       return status;
@@ -183,4 +212,10 @@ public class Person {
       this.webHomePage = webHomePage;
     }
          
+    /*
+    @Override
+    public String toString() {
+      return "Tutorial [id=" + id + ", title=" + title + ", desc=" + description + ", published=" + published + "]";
+    }
+    */
 }
