@@ -119,6 +119,7 @@ public class PersonApiController implements PersonApi {
         Person p = new Person();
 
         p.setId(person.getId());
+        p.setHref(URI.create(person.getHref()));
         p.setStatus(person.getStatus());
         p.setCreationDate(person.getCreationDate());
         p.setLastUpdate(person.getLastUpdate());

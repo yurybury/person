@@ -13,6 +13,7 @@ public class Person {
     @Id
     //@GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
+    private String href;
     @Column(name = "status")
     private String status;
     @Column(name = "creationDate")
@@ -75,6 +76,14 @@ public class Person {
     
     public void setId(String id) {
       this.id = id;
+    }
+
+    //
+    public String getHref() {
+      return id;
+    }
+    
+    public void setHref(String href) {
     }
 
     //
